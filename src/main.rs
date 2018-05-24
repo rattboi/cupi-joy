@@ -22,13 +22,8 @@ fn main() {
     }
 }
 
-fn handle_buttons(n: u8, state: bool, pin: &mut PinOutput) {
-    // println!("button {} state is {}", n, state);
-    if state == true {
-        pin.set(1).unwrap();
-    } else {
-        pin.set(0).unwrap();
-    }
+fn handle_buttons(_n: u8, state: bool, pin: &mut PinOutput) {
+    pin.set(state as i32).unwrap();
 }
 
 fn handle_axes() {

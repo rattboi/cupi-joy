@@ -5,6 +5,7 @@ PI_ADDRESS = 192.168.1.9
 
 TARGET = arm-unknown-linux-gnueabihf
 CARGO = cargo
+STRIP = arm-linux-gnueabihf-strip
 
 CARGO_OPTS = --target=$(TARGET)
 
@@ -32,10 +33,21 @@ bench:
 doc:
 	$(CARGO) doc $(CARGO_OPTS)
 
-run:
+debug:
+	$(CARGO) build $(CARGO_OPTS)
 	scp target/$(TARGET)/debug/$(NAME) $(PI_USER)@$(PI_ADDRESS):~
 	ssh $(PI_USER)@$(PI_ADDRESS) chmod +x ./$(NAME)
-	ssh $(PI_USER)@$(PI_ADDRESS) bash -c "./$(NAME) | true"
+	ssh $(PI_USER)@$(PI_ADDRESS) ./$(NAME) &
+	@read -p "Press enter to kill:" unused;
+	ssh $(PI_USER)@$(PI_ADDRESS) killall ./$(NAME)
+
+release:
+	$(CARGO) build $(CARGO_OPTS) --release
+	$(STRIP) target/$(TARGET)/release/$(NAME)
+	scp target/$(TARGET)/release/$(NAME) $(PI_USER)@$(PI_ADDRESS):~
+	ssh $(PI_USER)@$(PI_ADDRESS) chmod +x ./$(NAME)
+	ssh $(PI_USER)@$(PI_ADDRESS) ./$(NAME) &
+	@read -p "Press enter to kill:" unused;
 	ssh $(PI_USER)@$(PI_ADDRESS) killall ./$(NAME)
 
 kill:
