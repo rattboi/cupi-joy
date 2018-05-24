@@ -1,0 +1,8 @@
+[package]
+name = "cupi-joy"
+version = "0.1.0"
+authors = ["Bradon Kanyid <bradon@kanyid.org>"]
+
+[dependencies]
+joy = "0.1.3"
+cupi = { git = "https://github.com/rattboi/cupi" }
