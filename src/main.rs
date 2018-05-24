@@ -1,7 +1,7 @@
 extern crate cupi;
 extern crate joy;
 
-use cupi::{DigitalWrite, delay_ms};
+use cupi::{DigitalWrite};
 use cupi::mcp23x17::{MCP23S17, PinOutput};
 
 fn main() {
@@ -14,20 +14,22 @@ fn main() {
     loop {
         for ev in &mut js_dev {
             use joy::Event::*;
-            pinout0 = match ev {
-                Axis(_, _) => pinout0,
-                Button(n, b) => handle_buttons(n, b, pinout0),
+            match ev {
+                Axis(_, _) => handle_axes(),
+                Button(n, b) => handle_buttons(n, b, &mut pinout0),
             }
         }
     }
 }
 
-fn handle_buttons(n: u8, state: bool, mut pin: PinOutput) -> PinOutput {
+fn handle_buttons(n: u8, state: bool, pin: &mut PinOutput) {
     // println!("button {} state is {}", n, state);
     if state == true {
         pin.set(1).unwrap();
     } else {
         pin.set(0).unwrap();
     }
-    pin
+}
+
+fn handle_axes() {
 }
